@@ -57,7 +57,7 @@ class BookManager {
     {
         $matchingBooks = [];
         foreach ($this->books as $book) {
-            if ($book->getName() === $name) {
+            if (stripos($book->getName(), $name) !== false) {
                 $matchingBooks[] = $book;
             }
         }
@@ -68,7 +68,7 @@ class BookManager {
     {
         $matchingBooks = [];
         foreach ($this->books as $book) {
-            if ($book->getDescription() === $description) {
+            if (stripos($book->getDescription(), $description) !== false) {
                 $matchingBooks[] = $book;
             }
         }
@@ -152,6 +152,16 @@ class BookManager {
             $searchValue = strtolower($value) === 'yes';
             foreach ($this->books as $book) {
                 if ($book->getInStock() === $searchValue) {
+                    $matchingBooks[] = $book;
+                }
+            }
+            return $matchingBooks;
+        }
+
+        // Partial match for name && description
+        if ($column === 'name' || $column === 'description') {
+            foreach ($this->books as $book) {
+                if (stripos($book->$method(), $value) !== false) {
                     $matchingBooks[] = $book;
                 }
             }
