@@ -3,9 +3,9 @@
 require_once 'book.php';
 
 class BookManager {
-    private $books = [];
-    private $filename = 'books.json';
-    private $logfile = 'history.log';
+    private array $books = [];
+    private string $filename = 'books.json';
+    private string $logfile = 'history.log';
 
     public function __construct() {
         $this->loadBooks();
@@ -20,16 +20,17 @@ class BookManager {
         }
     }
 
-    public function addBook($name, $description, $inStock) {
+    public function addBook($name, $description, $inStock): Book
+    {
         $id = count($this->books) ? max(array_map(function ($book) { return $book->getId(); }, $this->books)) + 1 : 1;
-        $book = new Book($id, $name, $description, $inStock === "yes" ? true : false);
+        $book = new Book($id, $name, $description, $inStock === "yes");
         $this->books[] = $book;
         $this->saveBooks(); 
         $this->logAction("Added book: {$book->getName()}"); 
         return $book;
     }
 
-   private function saveBooks() {
+    private function saveBooks() {
         $data = array_map(function ($book) {
             return [
                 'id' => $book->getId(),
@@ -45,11 +46,13 @@ class BookManager {
         file_put_contents($this->logfile, $action . PHP_EOL, FILE_APPEND);
     }
 
-    public function getBooks() {
+    public function getBooks(): array
+    {
         return $this->books;
     }
     
-    public function findBookByName($name) {
+    public function findBookByName($name): array
+    {
         $matchingBooks = [];
         foreach ($this->books as $book) {
             if ($book->getName() === $name) {
@@ -59,7 +62,8 @@ class BookManager {
         return $matchingBooks;
     }
 
-    public function findBookByDescription($description) {
+    public function findBookByDescription($description): array
+    {
         $matchingBooks = [];
         foreach ($this->books as $book) {
             if ($book->getDescription() === $description) {
@@ -69,7 +73,8 @@ class BookManager {
         return $matchingBooks;
     }
 
-    public function findBookByStock($inStock) {
+    public function findBookByStock($inStock): array
+    {
         $matchingBooks = [];
         foreach ($this->books as $book) {
             if ($book->getInStock() === $inStock) {
@@ -88,7 +93,8 @@ class BookManager {
         return null;
     }
 
-    public function deleteBook($id){
+    public function deleteBook($id): bool
+    {
         foreach ($this->books as $index => $book) {
             if ($book->getId() == $id) {
                 array_splice($this->books, $index, 1);
@@ -114,7 +120,8 @@ class BookManager {
         return null;
     }
 
-    public function quickSort($column, $order = 'asc') {
+    public function quickSort($column, $order = 'asc'): array
+    {
         usort($this->books, function ($a, $b) use ($column, $order) {
             $methodA = 'get' . ucfirst($column);
     
@@ -181,19 +188,17 @@ class BookManager {
         return $column == 'id' ? null : $matchingBooks;
     }
 
-    public function displayHistoryLog() {
+    public function displayHistoryLog(): string
+    {
         if (!file_exists($this->logfile)) {
-            echo "Log file does not exist.\n";
-            return;
+            return "Log file does not exist.\n";
         }
 
         $logContent = file_get_contents($this->logfile);
         if ($logContent === false) {
-            echo "Failed to read log file.\n";
-            return;
+            return "Failed to read log file.\n";
         }
-
-       return $logContent;
+        return $logContent;
     }
 
     public function mergeSort($column, $order = 'asc') {
@@ -217,7 +222,8 @@ class BookManager {
         return $this->merge($left, $right, $column, $order);
     }
 
-    private function merge($left, $right, $column, $order) {
+    private function merge($left, $right, $column, $order): array
+    {
         $result = [];
         $method = 'get' . ucfirst($column);
 

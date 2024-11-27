@@ -3,7 +3,8 @@
 require_once 'bookManager.php';
 $manager = new BookManager();
 
-function readInput($message) {
+function readInput($message): string
+{
     echo $message;
     return trim(fgets(STDIN));
 }
@@ -20,22 +21,18 @@ function validateBookInput($name, $description, $inStock) {
     }
 }
 
-
 function addBook(){
     global $manager;
-    while(true){
-        try {
-            $name = readInput("Enter book name: ");
-            $description = readInput("Enter book description: ");
-            $inStock = readInput("Is the book in stock (yes/no): ");
-            validateBookInput($name, $description, $inStock);
-            $manager->addBook($name, $description, $inStock);
-            echo "Book added successfully.\n";
-            break;
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage() . "\n";
-            return;
-        }
+    try {
+        $name = readInput("Enter book name: ");
+        $description = readInput("Enter book description: ");
+        $inStock = readInput("Is the book in stock (yes/no): ");
+        validateBookInput($name, $description, $inStock);
+        $manager->addBook($name, $description, $inStock);
+        echo "Book added successfully.\n";
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage() . "\n";
+        return;
     }
 }
 
@@ -74,7 +71,6 @@ function deleteBook(){
     $criteria = readInput("Enter the criteria to delete the book (name/description/stock/id): ");
     $value = readInput("Enter the value for the selected criteria: ");
 
-    $book = null;
     switch($criteria) {
         case 'name':
             $books = $manager->findBookByName($value);
@@ -110,24 +106,21 @@ function deleteBook(){
 
 function updateBook(){
     global $manager;
-    while(true){
-        try {
-            $id = readInput("Enter the ID of the book to update: ");
-            if($manager->findBookById($id) === null){
-                echo "Book not found.\n";
-                return;
-            }
-            $name = readInput("Enter the new name of the book: ");
-            $description = readInput("Enter the new description of the book: ");
-            $inStock = readInput("Is the book in stock (yes/no): ");
-            validateBookInput($name, $description, $inStock);
-            $manager->updateBook($id, $name, $description, $inStock);
-            echo "Book updated successfully.\n";
-            break;
-        } catch (Exception $e) {
-            echo "Error: " . $e->getMessage() . "\n";
+    try {
+        $id = readInput("Enter the ID of the book to update: ");
+        if($manager->findBookById($id) === null){
+            echo "Book not found.\n";
             return;
         }
+        $name = readInput("Enter the new name of the book: ");
+        $description = readInput("Enter the new description of the book: ");
+        $inStock = readInput("Is the book in stock (yes/no): ");
+        validateBookInput($name, $description, $inStock);
+        $manager->updateBook($id, $name, $description, $inStock);
+        echo "Book updated successfully.\n";
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage() . "\n";
+        return;
     }
 }
 

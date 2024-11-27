@@ -47,7 +47,6 @@ function displayMenu() {
                 break;
             case 9:
                 exit;
-                break;
             default:
                 echo "Invalid option";
         }
