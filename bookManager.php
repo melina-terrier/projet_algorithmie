@@ -41,9 +41,11 @@ class BookManager {
         }, $this->books);
         file_put_contents($this->filename, json_encode($data, JSON_PRETTY_PRINT));
     }
-    
+
     private function logAction($action) {
-        file_put_contents($this->logfile, $action . PHP_EOL, FILE_APPEND);
+        $timestamp = date("d-m-Y H:i:s");
+        $logEntry = "[$timestamp] $action";
+        file_put_contents($this->logfile, $logEntry . PHP_EOL, FILE_APPEND);
     }
 
     public function getBooks(): array
