@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-require_once 'Book.php';
+require_once 'book.php';
 
 class BookManager {
     private $books = [];
@@ -105,7 +105,7 @@ class BookManager {
             if ($book->getId() == $id) {
                 $book->setName($name);
                 $book->setDescription($description);
-                $book->setInStock($inStock);
+                $book->setInStock($inStock === "yes");
                 $this->saveBooks();
                 $this->logAction("Updated book: {$book->getName()}");
                 return $book;
@@ -117,7 +117,6 @@ class BookManager {
     public function quickSort($column, $order = 'asc') {
         usort($this->books, function ($a, $b) use ($column, $order) {
             $methodA = 'get' . ucfirst($column);
-            $methodB = 'get' . ucfirst($column);
     
             if ($a->$methodA() == $b->$methodA()) {
                 return 0;
@@ -138,6 +137,17 @@ class BookManager {
         $high = count($this->books) - 1;
         $method = 'get' . ucfirst($column);
         $matchingBooks = [];
+
+        // This is to handle the inStock case (mismatch true / yes)
+        if ($column === 'inStock') {
+            $searchValue = strtolower($value) === 'yes';
+            foreach ($this->books as $book) {
+                if ($book->getInStock() === $searchValue) {
+                    $matchingBooks[] = $book;
+                }
+            }
+            return $matchingBooks;
+        }
 
         while ($low <= $high) {
             $mid = floor(($low + $high) / 2);
@@ -229,4 +239,3 @@ class BookManager {
         return array_merge($result, $left, $right);
     }
 }
-?>

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'BookManager.php';
+require_once 'bookManager.php';
 $manager = new BookManager();
 
 function readInput($message) {
@@ -190,4 +190,3 @@ function viewHistory() {
     echo "-------------------------\n";
     echo $logContent;
 }
-?>
